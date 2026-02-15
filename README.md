@@ -15,6 +15,12 @@ A website created for Professor Yadavally's Spring 2026 Processes of Object Orie
 * **Namecheap**: Domain registrar used to create the domain [simonechrastek.online](simonechrastek,online "simonechrastek.online")
 * **Git**: Version control used to track code changes.
 
+## Repository Management
+
+**Version Control:** Git is used to track development.
+
+**Environment Hygiene:** A .gitignore file is included to prevent environment-specific files (such as macOS .DS_Store or local configuration files) from cluttering the repository. This ensures the codebase remains clean and portable across different operating systems (Mac, Linux, and Windows).
+
 ## Remote Database Structure
 The project utilizes a MySQL relational database (COP4331) with the following schema:
 
