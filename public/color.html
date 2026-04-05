@@ -1,41 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>COP 4331 LAMP Stack Demo</title>
-	<script type="text/javascript" src="js/code.js"></script>
-    <link href="css/styles.css" rel="stylesheet">	
+    <title>COP4331 Colors Lab</title>
+    <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
-	
-	<script type="text/javascript">
-	document.addEventListener('DOMContentLoaded', function() 
-	{
-		readCookie();
-	}, false);
-	</script>
-	
+    <script type="text/javascript" src="js/code.js"></script>
 </head>
 <body>
 
-<h1 id="title">COP 4331 LAMP Stack Demo</h1>
+    <h1 id="title">Color Manager</h1>
 
-<div id="loggedInDiv">
-	<span id="userName"></span><br />
-	<button type="button" id="logoutButton" class="buttons" onclick="doLogout();"> Log Out </button>
-</div>
+    <div id="login-div">
+        <span id="inner-title">PLEASE LOG IN</span><br />
+        <input type="text" id="login-name" placeholder="Username" /><br />
+        <input type="password" id="login-password" placeholder="Password" /><br />
+        <button type="button" id="login-button" class="buttons" onclick="doLogin();"> Log In </button>
+        <span id="login-result"></span>
+    </div>
 
-<div id="accessUIDiv">
-	<br />
-
-	<input type="text" id="searchText" placeholder="Color To Search For"/>
-	<button type="button" id="searchColorButton" class="buttons" onclick="searchColor();"> Search Color </button><br />
-	<span id="colorSearchResult"></span>
-	<p id="colorList">
-	</p><br /><br />
-
-	<input type="text" id="colorText" placeholder="Color To Add">
-	<button type="button" id="addColorButton" class="buttons" onclick="addColor();"> Add Color </button><br />
-	<span id="colorAddResult"></span>
-</div>
+    <div id="access-ui-div" style="display:none;">
+        <span id="user-name"></span><br />
+        <button type="button" id="logout-button" class="buttons" onclick="doLogout();"> Log Out </button><br /><br />
+        
+        <input type="text" id="search-text" placeholder="Color To Search For">
+        <button type="button" id="search-color-button" class="buttons" onclick="searchColor();"> Search Color </button><br />
+        <span id="color-search-result"></span>
+        
+        <br /><br />
+        
+        <input type="text" id="color-text" placeholder="Color To Add">
+        <button type="button" id="add-color-button" class="buttons" onclick="addColor();"> Add Color </button><br />
+        <span id="color-add-result"></span>
+    </div>
 
 </body>
 </html>
