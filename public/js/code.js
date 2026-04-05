@@ -188,3 +188,9 @@ function searchColor()
         document.getElementById("color-search-result").innerHTML = err.message;
     }
 }
+
+window.doLogin = doLogin;
+window.readCookie = readCookie;
+window.doLogout = doLogout;
+window.addColor = addColor;
+window.searchColor = searchColor;
