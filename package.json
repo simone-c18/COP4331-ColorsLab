@@ -1,0 +1,35 @@
+{
+  "name": "cop4331-colorslab",
+  "version": "1.0.0",
+  "description": "A website created for Professor Yadavally's Spring 2026 Processes of Object Oriented Software Development (COP 4331). Implementing a LAMP stack, this website allows users to log in to their account (with creditials located in a remote database) and add/search for various colors.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint:html": "htmlhint **/*.html",
+    "lint:css": "stylelint **/*.css",
+    "lint:js": "eslint **/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/simone-c18/COP4331-ColorsLab.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/simone-c18/COP4331-ColorsLab/issues"
+  },
+  "homepage": "https://github.com/simone-c18/COP4331-ColorsLab#readme",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.2.0",
+    "globals": "^17.4.0",
+    "htmlhint": "^1.9.2",
+    "stylelint": "^17.6.0",
+    "stylelint-config-standard": "^40.0.0"
+  }
+}
