@@ -1,3 +1,5 @@
+/* eslint-disable no-undef, no-unused-vars, strict */
+
 /*
  * JavaScript MD5
  * https://github.com/blueimp/JavaScript-MD5
