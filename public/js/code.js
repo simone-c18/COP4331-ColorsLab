@@ -1,5 +1,3 @@
-/* exported doLogin, readCookie, doLogout, addColor, searchColor */
-
 const urlBase = 'http://simonechrastek.online/LAMPAPI';
 const extension = 'php';
 

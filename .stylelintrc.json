@@ -1,3 +1,4 @@
+// styling lint file
 {
   "extends": "stylelint-config-standard"
 }

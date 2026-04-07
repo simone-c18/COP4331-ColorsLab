@@ -1,3 +1,4 @@
+// html lint file
 {
   "tagname-lowercase": true,
   "attr-lowercase": true,
