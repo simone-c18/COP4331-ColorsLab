@@ -11,7 +11,7 @@ function doLogin()
     firstName = "";
     lastName = "";
     
-    // Updated IDs to match kebab-case
+    // updated IDs to match kebab-case
     let login = document.getElementById("login-name").value;
     let password = document.getElementById("login-password").value;
     

@@ -1,4 +1,3 @@
-# workflow file
 name: Lint HTML, CSS, and JavaScript
 
 on:
