@@ -7,6 +7,11 @@ on:
 jobs:
   quality-checks:
     runs-on: ubuntu-latest
+    env:
+      DB_HOST: 127.0.0.1
+      DB_USER: TheBeast
+      DB_PASSWORD: WeLoveCOP4331
+      DB_NAME: COP4331
     services:
       mysql:
         image: mysql:8.0

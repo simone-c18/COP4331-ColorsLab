@@ -19,6 +19,7 @@ const repoRoot = path.resolve(__dirname, '..');
 
 let phpServer;
 let phpServerExit;
+let phpServerOutput = '';
 
 if (shouldRunIntegration) {
   jest.setTimeout(integrationTimeoutMs);
@@ -27,17 +28,15 @@ if (shouldRunIntegration) {
 async function waitForServer(url, attempts = 60, delayMs = 250) {
   for (let attempt = 0; attempt < attempts; attempt += 1) {
     if (phpServerExit) {
-      throw new Error(`PHP server exited before becoming ready: ${phpServerExit}`);
+      throw new Error(
+        `PHP server exited before becoming ready: ${phpServerExit}\n${phpServerOutput}`
+      );
     }
 
     try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ login: 'healthcheck', password: 'healthcheck' }),
-      });
+      const response = await fetch(url);
 
-      if (response.ok) {
+      if (response.status < 500) {
         return;
       }
     } catch {
@@ -47,7 +46,9 @@ async function waitForServer(url, attempts = 60, delayMs = 250) {
     await new Promise((resolve) => setTimeout(resolve, delayMs));
   }
 
-  throw new Error(`PHP server did not become ready at ${url}`);
+  throw new Error(
+    `PHP server did not become ready at ${url}\nRecent PHP output:\n${phpServerOutput}`
+  );
 }
 
 async function postJson(endpoint, payload) {
@@ -94,9 +95,25 @@ describeIntegration('PHP API integration', () => {
 
     phpServer = spawn('php', ['-S', `${host}:${port}`, '-t', repoRoot], {
       cwd: repoRoot,
-      stdio: 'ignore',
+      stdio: ['ignore', 'pipe', 'pipe'],
+      env: {
+        ...process.env,
+        DB_HOST: process.env.DB_HOST || '127.0.0.1',
+        DB_USER: process.env.DB_USER || 'TheBeast',
+        DB_PASSWORD: process.env.DB_PASSWORD || 'WeLoveCOP4331',
+        DB_NAME: process.env.DB_NAME || 'COP4331',
+      },
     });
     phpServerExit = null;
+    phpServerOutput = '';
+
+    phpServer.stdout.on('data', (chunk) => {
+      phpServerOutput += chunk.toString();
+    });
+
+    phpServer.stderr.on('data', (chunk) => {
+      phpServerOutput += chunk.toString();
+    });
 
     phpServer.once('error', (error) => {
       phpServerExit = error.message;
@@ -106,7 +123,7 @@ describeIntegration('PHP API integration', () => {
       phpServerExit = `code=${code}, signal=${signal}`;
     });
 
-    await waitForServer(`${baseUrl}/Login.php`);
+    await waitForServer(`${baseUrl}/Health.php`);
   }, integrationTimeoutMs);
 
   afterAll(async () => {
