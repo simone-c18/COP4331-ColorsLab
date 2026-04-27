@@ -7,11 +7,19 @@ export default [
     languageOptions: {
       globals: {
         ...globals.browser,
-        ...globals.node, 
+        ...globals.node,
       },
     },
     rules: {
       "eslint-comments/no-unused-disable": "off",
+    },
+  },
+  {
+    files: ["tests/**/*.js"],
+    languageOptions: {
+      globals: {
+        ...globals.jest,
+      },
     },
   },
 ];

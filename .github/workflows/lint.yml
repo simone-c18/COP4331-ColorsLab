@@ -1,12 +1,27 @@
-name: Lint HTML, CSS, and JavaScript
+name: Lint and Test
 
 on:
   push:
   pull_request:
 
 jobs:
-  lint:
+  quality-checks:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: COP4331
+          MYSQL_USER: TheBeast
+          MYSQL_PASSWORD: WeLoveCOP4331
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
 
     steps:
       - name: Checkout code
@@ -16,9 +31,22 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mysqli
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+
+      - name: Install MySQL client
+        run: sudo apt-get update && sudo apt-get install -y mysql-client
+
+      - name: Seed integration database
+        run: mysql -h 127.0.0.1 -uTheBeast -pWeLoveCOP4331 COP4331 < tests/fixtures/integration.sql
 
       - name: Lint HTML
         run: npm run lint:html
@@ -28,3 +56,8 @@ jobs:
 
       - name: Lint JavaScript
         run: npm run lint:js
+
+      - name: Run tests
+        env:
+          RUN_API_INTEGRATION: '1'
+        run: npm test -- --runInBand
