@@ -10,6 +10,7 @@ const path = require('path');
 
 const shouldRunIntegration = process.env.RUN_API_INTEGRATION === '1';
 const describeIntegration = shouldRunIntegration ? describe : describe.skip;
+const integrationTimeoutMs = 20000;
 
 const host = '127.0.0.1';
 const port = Number(process.env.API_TEST_PORT || 8000);
@@ -17,9 +18,18 @@ const baseUrl = `http://${host}:${port}/api`;
 const repoRoot = path.resolve(__dirname, '..');
 
 let phpServer;
+let phpServerExit;
 
-async function waitForServer(url, attempts = 40, delayMs = 250) {
+if (shouldRunIntegration) {
+  jest.setTimeout(integrationTimeoutMs);
+}
+
+async function waitForServer(url, attempts = 60, delayMs = 250) {
   for (let attempt = 0; attempt < attempts; attempt += 1) {
+    if (phpServerExit) {
+      throw new Error(`PHP server exited before becoming ready: ${phpServerExit}`);
+    }
+
     try {
       const response = await fetch(url, {
         method: 'POST',
@@ -55,6 +65,20 @@ async function postJson(endpoint, payload) {
   };
 }
 
+function stopPhpServer() {
+  return new Promise((resolve) => {
+    if (!phpServer || phpServer.killed) {
+      resolve();
+      return;
+    }
+
+    phpServer.once('close', () => {
+      resolve();
+    });
+    phpServer.kill('SIGTERM');
+  });
+}
+
 describeIntegration('PHP API integration', () => {
   beforeAll(async () => {
     const phpCheck = spawnSync('php', ['-v'], {
@@ -72,15 +96,22 @@ describeIntegration('PHP API integration', () => {
       cwd: repoRoot,
       stdio: 'ignore',
     });
+    phpServerExit = null;
+
+    phpServer.once('error', (error) => {
+      phpServerExit = error.message;
+    });
+
+    phpServer.once('exit', (code, signal) => {
+      phpServerExit = `code=${code}, signal=${signal}`;
+    });
 
     await waitForServer(`${baseUrl}/Login.php`);
-  });
+  }, integrationTimeoutMs);
 
-  afterAll(() => {
-    if (phpServer) {
-      phpServer.kill();
-    }
-  });
+  afterAll(async () => {
+    await stopPhpServer();
+  }, 10000);
 
   test('logs in with seeded credentials', async () => {
     const response = await postJson('Login', {
